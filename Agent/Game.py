@@ -1,6 +1,7 @@
 # 贪吃蛇游戏环境模拟程序，用于智能体训练
-# 奖励设置：吃到食物则奖励reward+10，游戏结束（发生碰撞或者持续长时间不得分）则惩罚reward-10，其余行为不得分不扣分
 # 可用动作：[1,0,0]直走，[0,1,0]右转，[0,0,1]左转
+# 状态设置：以np.ndarray数组形式存在，参考智能体程序内的的相关代码
+# 奖励设置：吃到食物则奖励reward+10，游戏结束（发生碰撞或者持续长时间不得分）则惩罚reward-10，其余行为不得分不扣分
 
 import pygame
 import random
@@ -8,22 +9,20 @@ from enum import Enum
 from collections import namedtuple
 import numpy as np
 
-# 初始化pygame
-pygame.init()
-
-# 载入字体
-font = pygame.font.Font("./Game/Arial.ttf", 25)
-
 # 记录颜色（RGB）以便使用
 WHITE = (255, 255, 255)
 RED = (200,0,0)
 BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
-
 # 方块大小与游戏速度
 BLOCK_SIZE = 20
 SPEED = 20
+
+# 初始化pygame
+pygame.init()
+# 载入字体
+font = pygame.font.Font("./Resource/Arial.ttf", 25)
 
 # 蛇的四个前进方向
 class Direction(Enum):
@@ -32,12 +31,18 @@ class Direction(Enum):
     UP = 3
     DOWN = 4
 
+# 定义智能体能执行的三种动作
+class ActionType(Enum):
+    Straight = [1,0,0]
+    Right = [0,1,0]
+    Left = [0,0,1]
+
 # 自定义Point的元组数据类型，每个该类型对象拥有一对(x,y)坐标
 Point = namedtuple('Point', 'x, y')
 
 class SnakeGameAI:
     # 初始化贪吃蛇游戏
-    def __init__(self, w=640, h=480) -> None:
+    def __init__(self, w:int=640, h:int=480) -> None:
         # 游戏窗口的宽高
         self.w = w
         self.h = h
@@ -69,7 +74,7 @@ class SnakeGameAI:
         # 初始化一个计数器，用于记录游戏运行了多少帧，本质是当作计时器使用
         self.frameIteration = 0
 
-    def UpdateGame(self, action) -> tuple[int, bool, int]:
+    def UpdateGame(self, action:ActionType) -> tuple[int, bool, int]:
         # 递增游戏运行的总帧数，只有当调用ResetGame后才会清零
         self.frameIteration += 1
         
@@ -128,7 +133,7 @@ class SnakeGameAI:
         if self.food in self.snake:
             self.SummonFood()
 
-    def IsCollision(self, pt=None) -> bool:
+    def IsCollision(self, pt:Point=None) -> bool:
         # pt代表一个点，初始化为蛇头
         if pt is None:
             pt = self.head
@@ -156,20 +161,20 @@ class SnakeGameAI:
         self.display.blit(text, [0, 0])
         pygame.display.flip()
         
-    def Move(self, action) -> None:
+    def Move(self, action:ActionType) -> None:
         # 记录顺时针方向，用于得到[当前方向]叠加[action]操作后得到的具体方向
         clockWise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
         # 保存蛇原本的方向在clockWise中的索引数，类似STL的vector的find函数
         idx = clockWise.index(self.direction)
 
         # 对比传入的action动作矩阵，[1,0,0]表示直走，[0,1,0]表示右转，[0,0,1]表示左转
-        if np.array_equal(action, [1,0,0]):
+        if np.array_equal(action, ActionType.Straight):
             # 若是直走，则蛇保持原有的方向不变
             new_dir = clockWise[idx]
-        if np.array_equal(action, [0,1,0]):
+        if np.array_equal(action, ActionType.Right):
             # 若是向右转，则在原方向的基础上顺时针变换一个方向，取模应对的是idx从最大索引3递增到4的情况
             new_dir = clockWise[(idx + 1) % 4]
-        if np.array_equal(action, [0,0,1]):
+        if np.array_equal(action, ActionType.Left):
             # 若是向左转，则在原方向的基础上逆时针变换一个方向，(-1%4)的结果是3
             new_dir = clockWise[(idx - 1) % 4]
 
