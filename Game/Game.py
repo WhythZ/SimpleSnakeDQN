@@ -14,13 +14,6 @@ pygame.init()
 # 载入字体
 font = pygame.font.Font("./Game/Arial.ttf", 25)
 
-# 人类玩家的四个方向操作，与智能体能操作的三个动作（直走、向左、向右）不同
-class Direction(Enum):
-    RIGHT = 1
-    LEFT = 2
-    UP = 3
-    DOWN = 4
-    
 # 记录颜色（RGB）以便使用
 WHITE = (255, 255, 255)
 RED = (200,0,0)
@@ -32,11 +25,19 @@ BLACK = (0,0,0)
 BLOCK_SIZE = 20
 SPEED = 20
 
+# 蛇的四个前进方向
+class Direction(Enum):
+    RIGHT = 1
+    LEFT = 2
+    UP = 3
+    DOWN = 4
+
+# 自定义Point的元组数据类型，每个该类型对象拥有一对(x,y)坐标
 Point = namedtuple('Point', 'x, y')
 
 class SnakeGameAI:
     # 初始化贪吃蛇游戏
-    def __init__(self, w=640, h=480):
+    def __init__(self, w=640, h=480) -> None:
         # 游戏窗口的宽高
         self.w = w
         self.h = h
@@ -49,7 +50,7 @@ class SnakeGameAI:
         # 重置用于训练智能体的游戏环境，在执行此函数前进行的其它初始化都是静态性质的，无需每次都重置
         self.ResetGame()
         
-    def ResetGame(self):
+    def ResetGame(self) -> None:
         # 初始化蛇的初始前进方向
         self.direction = Direction.RIGHT
         
@@ -68,7 +69,7 @@ class SnakeGameAI:
         # 初始化一个计数器，用于记录游戏运行了多少帧，本质是当作计时器使用
         self.frameIteration = 0
 
-    def UpdateGame(self, action):
+    def UpdateGame(self, action) -> tuple[int, bool, int]:
         # 递增游戏运行的总帧数，只有当调用ResetGame后才会清零
         self.frameIteration += 1
         
@@ -118,7 +119,7 @@ class SnakeGameAI:
         # 返回奖励、游戏结束与否（吃到了食物的话返回的是初始值False）、阶段性得分数
         return reward, gameOver, self.score
 
-    def SummonFood(self):
+    def SummonFood(self) -> None:
         # 在地图上随机位置生成食物
         x = random.randint(0, (self.w-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE 
         y = random.randint(0, (self.h-BLOCK_SIZE )//BLOCK_SIZE )*BLOCK_SIZE
@@ -127,7 +128,7 @@ class SnakeGameAI:
         if self.food in self.snake:
             self.SummonFood()
 
-    def IsCollision(self, pt=None):
+    def IsCollision(self, pt=None) -> bool:
         # pt代表一个点，初始化为蛇头
         if pt is None:
             pt = self.head
@@ -140,7 +141,7 @@ class SnakeGameAI:
         
         return False
         
-    def UpdateUI(self):
+    def UpdateUI(self) -> None:
         self.display.fill(BLACK)
         
         # 蛇移动的图像渲染
@@ -155,7 +156,7 @@ class SnakeGameAI:
         self.display.blit(text, [0, 0])
         pygame.display.flip()
         
-    def Move(self, action):
+    def Move(self, action) -> None:
         # 记录顺时针方向，用于得到[当前方向]叠加[action]操作后得到的具体方向
         clockWise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
         # 保存蛇原本的方向在clockWise中的索引数，类似STL的vector的find函数
@@ -175,35 +176,32 @@ class SnakeGameAI:
         # 赋予当前蛇以新的方向
         self.direction = new_dir
 
-        # 
+        # 移动；注意屏幕的下方是y轴的正方向（SDL、EasyX等图形API也是这个毛病），所以向下是对y坐标递增
         x = self.head.x
         y = self.head.y
-        if direction == Direction.RIGHT:
+        if self.direction == Direction.RIGHT:
             x += BLOCK_SIZE
-        elif direction == Direction.LEFT:
+        elif self.direction == Direction.LEFT:
             x -= BLOCK_SIZE
-        elif direction == Direction.DOWN:
+        elif self.direction == Direction.DOWN:
             y += BLOCK_SIZE
-        elif direction == Direction.UP:
+        elif self.direction == Direction.UP:
             y -= BLOCK_SIZE
             
         self.head = Point(x, y)
 
-if __name__ == '__main__':
-    # 初始化贪吃蛇游戏环境
-    game = SnakeGameAI()
-    
-    # 游戏主循环
-    while True:
-        # 每循环一次调用一次更新，并获取返回值信息
-        reward, gameOver, score = game.UpdateGame()
-        
-        # 游戏结束即跳出游戏主循环
-        if gameOver == True:
-            break
-    
-    # 在游戏结束后打印总得分数
-    print('Final Score', score)
-    
-    # 销毁游戏环境
-    pygame.quit()
+# # 使得游戏响应玩家输入
+# if __name__ == '__main__':
+#     # 初始化贪吃蛇游戏环境
+#     game = SnakeGameAI()
+#     # 游戏主循环
+#     while True:
+#         # 每循环一次调用一次更新，并获取返回值信息
+#         gameOver, score = game.UpdateGame()
+#         # 游戏结束即跳出游戏主循环
+#         if gameOver == True:
+#             break
+#     # 在游戏结束后打印总得分数
+#     print('Final Score', score)
+#     # 销毁游戏环境
+#     pygame.quit()
