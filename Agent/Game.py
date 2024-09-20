@@ -19,7 +19,7 @@ BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 # 方块大小与游戏速度
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 60
 
 # 初始化pygame
 pygame.init()
@@ -44,6 +44,7 @@ class SnakeGameAI:
         self.h = h
         # 初始化图像显示
         self.display = pygame.display.set_mode((self.w, self.h))
+        # 游戏窗口标题
         pygame.display.set_caption('Snake')
         # 全局计时器，即时游戏重新开始也不会停止计时
         self.clock = pygame.time.Clock()
@@ -99,15 +100,16 @@ class SnakeGameAI:
         gameOver = False
         
         # 如果发生了碰撞，或者长时间（与身体长度成正比）不得分，则进行惩罚
-        if self.IsCollision() or self.frameIteration >= 100*len(self.snake):
+        if self.IsCollision() or self.frameIteration >= 50*len(self.snake):
             # 游戏结束进行惩罚
-            reward = -10
+            reward -= 10
             gameOver = True
             # 直接返回惩罚、游戏结束的信息、以及得分
             return reward, gameOver, self.score
         # 如果吃到了食物则加分、进行奖励、并生成新的食物，否则一直移动
         elif self.head == self.food:
             self.score += 1
+            reward += 10
             self.SummonFood()
         # 否则删除尾部元素，然后在下一个循环开头会增长头部，以达成移动
         else:

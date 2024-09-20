@@ -35,9 +35,13 @@ class LinearQNet(nn.Module):
         if not os.path.exists(modelFolderPath):
             os.makedirs(modelFolderPath)
         
-        # 以传入的文件名，将保存模型到目录下
+        # 以传入的文件名，将模型（只保存模型的参数）保存到目录下
         finalFileName = os.path.join(modelFolderPath, fileName)
-        torch.save(self.state_dict, finalFileName)
+        torch.save(self.state_dict(), finalFileName)
+
+    # # 用于加载已有模型
+    # def Load(self) -> None:
+    #     modelPath = './Model/model.pth'
 
 class QTrainer:
     def __init__(self, model:LinearQNet, lr:float, gamma:float) -> None:

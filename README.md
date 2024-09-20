@@ -6,7 +6,9 @@ This repo adopts [MIT License](https://spdx.org/licenses/MIT)
 
 ## About
 
-A simple DQN snake game agent that you can train by yourself
+A simple DQN snake game agent training programme
+
+![demo.gif](/Resource/Demo.gif)
 
 ## Environment
 
@@ -25,13 +27,11 @@ pip3 install torch torchvision
 pip3/conda/pip install matplotlib ipython
 ```
 
-- After installing all the dependencies, just run the `agent.py` to start training
+- After installing all the dependencies, run the `agent.py` to start training, the model will be saved in the `Model` folder
 ```bash
 cd your_project_dir\Agent
 python agent.py
 ```
-
-- The model will be saved in the `Model` folder, you can delete the pre-trained `model.pth` in it and start training another
 
 - If you encounter the following error, install `nomkl` package in your conda environment
 ```

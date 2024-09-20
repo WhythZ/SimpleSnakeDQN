@@ -87,9 +87,8 @@ class Agent:
         return np.array(state, dtype=int)
     
     def Remember(self, oldState:np.ndarray, lastAction:np.ndarray[Literal[3], int], reward:int, newState:np.ndarray, gameOver:bool) -> None:
-        # 将传入的这一组信息以单个tuple的形式（注意此处有内层括号）写入智能体的memory队列内
+        # 将传入的这一组信息以单个tuple的形式（注意此处有内层括号）写入智能体的memory队列内，如果记忆满了会自动popleft()删除队尾元素
         self.memory.append((oldState, lastAction, reward, newState, gameOver))
-        # 如果记忆满了就popleft()删除队尾元素
 
     def TrainShortMemory(self, oldState:np.ndarray, lastAction:np.ndarray[Literal[3], int], reward:int, newState:np.ndarray, gameOver:bool) -> None:
         # 进行单组数据的训练
