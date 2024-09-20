@@ -6,11 +6,11 @@ import numpy as np
 # 导入双端队列数据结构
 from collections import deque
 # 导入我们实现的游戏环境
-from Game import SnakeGameAI, Direction, Point
+from game import SnakeGameAI, Direction, Point
 # 导入训练相关
-from Model import LinearQNet, QTrainer
+from model import LinearQNet, QTrainer
 # 导入可视化
-from Displayer import Plot
+from displayer import Plot
 # 用于类型注解（标注指定长度的np.ndarray数组）
 from typing import Literal
 
@@ -184,7 +184,7 @@ def Train() -> None:
             totalScore += currentScore
             plotMeanScores.append(totalScore / agent.gameNumber)
             # 进行分数的可视化
-            # Plot(plotScores, plotMeanScores)
+            Plot(plotScores, plotMeanScores)
 
 # 主函数开启训练
 if __name__ == '__main__':

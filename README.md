@@ -11,22 +11,32 @@ A simple DQN snake game agent that you can train by yourself
 ## Environment
 
 - Install pygame for game environment simulation
-```
+```bash
 pip3/conda/pip install pygame
 ```
 
 - Install pytorch for DQN model training, where CPU training is enough for this agent
-```
+```bash
 pip3 install torch torchvision
 ```
 
 - Install matplotlib and ipython to help display the training results
-```
+```bash
 pip3/conda/pip install matplotlib ipython
 ```
 
-- After installing all the dependencies, just run the `Agent.py` to start training, the model will be saved in the `Model` folder
+- After installing all the dependencies, just run the `agent.py` to start training
 ```bash
 cd your_project_dir\Agent
-python Agent.py
+python agent.py
+```
+
+- The model will be saved in the `Model` folder, you can delete the pre-trained `model.pth` in it and start training another
+
+- If you encounter the following error, install `nomkl` package in your conda environment
+```
+OMP: Error #15: Initializing libiomp5md.dll, but found libiomp5md.dll already initialized
+```
+```bash
+conda install nomkl
 ```
