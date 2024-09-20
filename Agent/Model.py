@@ -8,7 +8,7 @@ import torch.nn.functional as F
 import os
 # 用于类型注解
 import numpy as np
-from Game import ActionType
+from typing import Literal
 
 # 继承自nn
 class LinearQNet(nn.Module):
@@ -49,7 +49,7 @@ class QTrainer:
         self.criterion = nn.MSELoss()
 
     # 当进行短时记忆训练时接收单组数据输入；当进行长时记忆训练时，接收多组相同长度的数据输入
-    def StepTrain(self, oldState:np.ndarray, lastAction:ActionType, reward:int, newState:np.ndarray, gameOver:bool) -> None:
+    def StepTrain(self, oldState:np.ndarray, lastAction:np.ndarray[Literal[3], int], reward:int, newState:np.ndarray, gameOver:bool) -> None:
         # 将传入数据进行类型转换
         oldState = torch.tensor(oldState, dtype=torch.float)
         newState = torch.tensor(newState, dtype=torch.float)

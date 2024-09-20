@@ -26,3 +26,7 @@ pip3/conda/pip install matplotlib ipython
 ```
 
 - After installing all the dependencies, just run the `Agent.py` to start training, the model will be saved in the `Model` folder
+```bash
+cd your_project_dir\Agent
+python Agent.py
+```

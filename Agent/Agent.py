@@ -6,11 +6,13 @@ import numpy as np
 # 导入双端队列数据结构
 from collections import deque
 # 导入我们实现的游戏环境
-from Game import SnakeGameAI, Direction, ActionType, Point
+from Game import SnakeGameAI, Direction, Point
 # 导入训练相关
 from Model import LinearQNet, QTrainer
 # 导入可视化
 from Displayer import Plot
+# 用于类型注解（标注指定长度的np.ndarray数组）
+from typing import Literal
 
 # 双端队列的最大容量
 MAX_MEMORY = 100_000
@@ -84,18 +86,18 @@ class Agent:
         # 将上述状态以numpy数组形式（元素类型为从bool转化而得的int类型）返回
         return np.array(state, dtype=int)
     
-    def Remember(self, oldState:np.ndarray, lastAction:ActionType, reward:int, newState:np.ndarray, gameOver:bool) -> None:
+    def Remember(self, oldState:np.ndarray, lastAction:np.ndarray[Literal[3], int], reward:int, newState:np.ndarray, gameOver:bool) -> None:
         # 将传入的这一组信息以单个tuple的形式（注意此处有内层括号）写入智能体的memory队列内
         self.memory.append((oldState, lastAction, reward, newState, gameOver))
         # 如果记忆满了就popleft()删除队尾元素
 
-    def TrainShortMemory(self, oldState:np.ndarray, lastAction:ActionType, reward:int, newState:np.ndarray, gameOver:bool) -> None:
+    def TrainShortMemory(self, oldState:np.ndarray, lastAction:np.ndarray[Literal[3], int], reward:int, newState:np.ndarray, gameOver:bool) -> None:
         # 进行单组数据的训练
         self.trainer.StepTrain(oldState, lastAction, reward, newState, gameOver)
 
     def TrainLongMemory(self) -> None:
         # 对memory中的数组组数进行评估
-        if self.memory > BATCH_SIZE:
+        if len(self.memory) > BATCH_SIZE:
             # 从memory中随机抓取BATCH_SIZE组数据tuple进行训练（miniSample和memory一样是以tuple为元素的数组）
             miniSample = random.sample(self.memory, BATCH_SIZE)
         else:
@@ -108,16 +110,16 @@ class Agent:
         # for oldState, lastAction, reward, newState, gameOver in miniSample:
         #     self.trainer.StepTrain(oldState, lastAction, reward, newState, gameOver)
 
-    def GetAction(self, state:np.ndarray) -> ActionType:
-        # 作为结果动作输出的对象
+    def GetAction(self, state:np.ndarray) -> np.ndarray[Literal[3], int]:
+        # 作为结果输出的动作，只需将三个元素位置之一换为1即可
         resultMoveAction = [0,0,0]
-
+        
         # 当局数小于等于80（此处为了方便使用硬编码）局时，才有概率随机选取动作（局数越少，随机选取的概率越大）
         self.epsilon = 80 - self.gameNumber
         if random.randint(0,200) < self.epsilon:
             # 随机选取三个动作中的一个作为结果
             idx = random.randint(0,2)
-            resultMoveAction[idx] = 1 
+            resultMoveAction[idx] = 1
         # 否则就是通过模型来预测下一步的动作
         else:
             # 使用torch
@@ -129,7 +131,7 @@ class Agent:
             # 以最大的那个位置化为1作为输出动作
             resultMoveAction[idx] = 1
         
-        # 输出结果动作（与ActionType枚举内的形式其实是一致的）
+        # 输出结果动作
         return resultMoveAction
 
 # 游戏主循环，并对智能体进行训练
@@ -182,7 +184,7 @@ def Train() -> None:
             totalScore += currentScore
             plotMeanScores.append(totalScore / agent.gameNumber)
             # 进行分数的可视化
-            Plot(plotScores, plotMeanScores)
+            # Plot(plotScores, plotMeanScores)
 
 # 主函数开启训练
 if __name__ == '__main__':
