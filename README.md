@@ -30,7 +30,7 @@ pip3/conda/pip install matplotlib ipython
 - After installing all the dependencies, run the `agent.py` to start new training task
 ```bash
 cd your_project_dir\Agent
-python agent.py
+python Agent.py
 ```
 
 - If you encounter the following error, install `nomkl` package in your conda environment
@@ -41,7 +41,7 @@ OMP: Error #15: Initializing libiomp5md.dll, but found libiomp5md.dll already in
 conda install nomkl
 ```
 
-## Improve
+## Improvement
 
 - The snake agent will frequently crash into its own body then end the game
 

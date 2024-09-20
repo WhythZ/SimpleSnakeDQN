@@ -10,11 +10,11 @@ import os
 # 用于类型注解（标注指定长度的np.ndarray数组）
 from typing import Literal
 # 导入我们实现的游戏环境
-from game import SnakeGameAI, Direction, Point
+from Game import SnakeGameAI, Direction, Point
 # 导入训练相关
-from model import LinearQNet, QTrainer
+from Model import LinearQNet, QTrainer
 # 导入可视化
-from displayer import Plot
+from Displayer import Plot
 
 # 双端队列的最大容量
 MAX_MEMORY = 100_000
