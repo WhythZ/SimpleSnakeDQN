@@ -39,10 +39,6 @@ class LinearQNet(nn.Module):
         finalFileName = os.path.join(modelFolderPath, fileName)
         torch.save(self.state_dict(), finalFileName)
 
-    # # 用于加载已有模型
-    # def Load(self) -> None:
-    #     modelPath = './Model/model.pth'
-
 class QTrainer:
     def __init__(self, model:LinearQNet, lr:float, gamma:float) -> None:
         self.lr = lr

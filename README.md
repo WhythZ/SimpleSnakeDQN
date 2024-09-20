@@ -27,7 +27,7 @@ pip3 install torch torchvision
 pip3/conda/pip install matplotlib ipython
 ```
 
-- After installing all the dependencies, run the `agent.py` to start training, the model will be saved in the `Model` folder
+- After installing all the dependencies, run the `agent.py` to start new training task
 ```bash
 cd your_project_dir\Agent
 python agent.py
@@ -40,3 +40,9 @@ OMP: Error #15: Initializing libiomp5md.dll, but found libiomp5md.dll already in
 ```bash
 conda install nomkl
 ```
+
+## Improve
+
+- The snake agent will frequently crash into its own body then end the game
+
+- The reason is that the agent is unaware of the position info about the snake body (because of the state design), thus unconscious to reduce the risk of crashing into itself

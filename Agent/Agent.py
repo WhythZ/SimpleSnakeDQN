@@ -5,14 +5,16 @@ import random
 import numpy as np
 # 导入双端队列数据结构
 from collections import deque
+# 用于以加载模型文件
+import os
+# 用于类型注解（标注指定长度的np.ndarray数组）
+from typing import Literal
 # 导入我们实现的游戏环境
 from game import SnakeGameAI, Direction, Point
 # 导入训练相关
 from model import LinearQNet, QTrainer
 # 导入可视化
 from displayer import Plot
-# 用于类型注解（标注指定长度的np.ndarray数组）
-from typing import Literal
 
 # 双端队列的最大容量
 MAX_MEMORY = 100_000
@@ -33,8 +35,16 @@ class Agent:
         self.gamma = 0.9
         # 使用双端队列进行记忆，使用popleft()进行出队
         self.memory = deque(maxlen=MAX_MEMORY)
-        # 初始化训练模型的输入、隐藏、输出层
+
+        # 初始化空白训练模型的输入、隐藏、输出层
         self.model = LinearQNet(11, 256, 3)
+
+        # # 如果存在已有模型，则加载已有模型，否则使用空白模型从头开始训练
+        # if os.path.exists("./Model/model.pth"):
+        #     # 从路径下读取模型文件
+        #     self.model.load_state_dict(torch.load("./Model/model.pth"))
+        #     # 注意如果是加载已有模型，开头就无需使用随机行动，需要传参告诉agent
+
         # 初始化训练器
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
@@ -142,8 +152,8 @@ def Train() -> None:
     plotScores = []
     plotMeanScores = []
     # 初始化智能体与游戏环境
-    agent = Agent()
     game = SnakeGameAI()
+    agent = Agent()
 
     # 利用游戏环境进行训练的主循环
     while True:
