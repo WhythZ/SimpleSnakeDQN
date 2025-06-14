@@ -45,4 +45,4 @@ conda install nomkl
 ```
 
 ## Improvement
-- The snake agent will frequently crash into its own body then end the game, the reason is that the agent is unaware of the position info about the snake body (because of the state design), thus unconscious to reduce the risk of crashing into itself
+The snake agent will frequently crash into its own body then end the game, the reason is that the agent is unaware of the position info about the snake body because of the state design, thus unconscious to reduce the risk of crashing into itself
